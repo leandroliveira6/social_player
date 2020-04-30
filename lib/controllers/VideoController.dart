@@ -100,30 +100,31 @@ class VideoController {
           {
             'title': 'Video 1',
             'url':
-                'https://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_2mb.mp4',
+                'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
             'viewed': true,
           },
           {
             'title': 'Video 2',
             'url':
-                'https://www.sample-videos.com/video123/flv/720/big_buck_bunny_720p_2mb.flv',
+                'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
             'viewed': false,
           },
           {
             'title': 'Video 3',
             'url':
-                'https://www.sample-videos.com/video123/mkv/720/big_buck_bunny_720p_2mb.mkv',
+                'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
             'viewed': false,
           },
           {
             'title': 'Video 4',
             'url':
-                'https://www.sample-videos.com/video123/3gp/144/big_buck_bunny_144p_2mb.3gp',
+                'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
             'viewed': false,
           },
           {
             'title': 'Video 5 Diferentão',
-            'url': 'https://www.runoob.com/try/demo_source/movie.mp4',
+            'url':
+                'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
             'viewed': false,
           },
         ]
