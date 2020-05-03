@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
-import 'package:social_player/controllers/VideoController.dart';
+import 'package:video_player/video_player.dart';
 
 class PlayerWidget extends StatefulWidget {
   PlayerWidget({Key key}) : super(key: key);
@@ -10,43 +9,57 @@ class PlayerWidget extends StatefulWidget {
 }
 
 class _PlayerWidgetState extends State<PlayerWidget> {
+  VideoPlayerController _controller;
+
   @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: VideoController.instance.playerController.ijkStatusStream,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        Widget widget = Center(
-          child: CircularProgressIndicator(),
-        );
-
-        if (snapshot.hasData) {
-          switch (snapshot.data) {
-            case IjkStatus.playing:
-            case IjkStatus.pause:
-            case IjkStatus.complete:
-              widget = IjkPlayer(
-                mediaController: VideoController.instance.playerController,
-              );
-              break;
-            case IjkStatus.error:
-            case IjkStatus.setDatasourceFail:
-              widget = Center(
-                child: Text('Houve um erro'),
-              );
-              break;
-          }
-        }
-
-        return Container(
-          child: AspectRatio(aspectRatio: 16 / 9, child: widget),
-        );
-      },
-    );
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.network(
+        'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4');
+    _controller.initialize();
+    _controller.addListener(() {
+      if (_controller.value.position == _controller.value.duration) {
+        print('Terminou');
+        _controller.seekTo(Duration.zero);
+      }
+    });
   }
 
   @override
   void dispose() {
-    VideoController.instance.dispose();
     super.dispose();
+    _controller.dispose();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        AspectRatio(
+          aspectRatio: 16 / 8,
+          child: VideoPlayer(_controller),
+        ),
+        Row(children: [
+          FlatButton(
+            child: Text('Play'),
+            onPressed: () {
+              setState(() {
+                _controller.play();
+              });
+            },
+          ),
+          FlatButton(
+            child: Text('Pause'),
+            onPressed: () {
+              setState(() {
+                _controller.pause();
+              });
+            },
+          ),
+        ]),
+      ],
+    );
+  }
+
+  void onViewPlayerCreated(controller) {}
 }

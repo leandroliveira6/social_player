@@ -7,8 +7,8 @@
     {
       "name": "Flutter",
       "request": "launch",
-      "type": "dart",
-      "args": ["-d", "chrome"]
+      "type": "dart"
+      // "args": ["-d", "chrome"]
     }
   ]
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+// import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:social_player/models/Video.dart';
 
 class VideoController {
@@ -10,7 +10,7 @@ class VideoController {
   List<Video> _videos;
   StreamController<String> _videoTitleController;
 
-  IjkMediaController _playerController;
+  // IjkMediaController _playerController;
 
   static get instance => _instance;
   static get newInstance => _instance = VideoController();
@@ -20,20 +20,20 @@ class VideoController {
   get currentVideo => _videos[_currentVideoIndex];
   get videoTitleStream => _videoTitleController.stream;
 
-  get playerController => _playerController;
+  // get playerController => _playerController;
 
   VideoController() {
     _currentVideoIndex = 0;
     _videos = List<Video>();
     _videoTitleController = StreamController.broadcast();
-    _playerController = IjkMediaController();
-    _playerController.ijkStatusStream.listen((status) {
-      final videoInfo = _playerController.videoInfo;
-      print('DEBUG STATUS: $status');
-      if (status == IjkStatus.complete && videoInfo.progress > 0.9) {
-        nextVideo();
-      }
-    });
+    // _playerController = IjkMediaController();
+    // _playerController.ijkStatusStream.listen((status) {
+    //   final videoInfo = _playerController.videoInfo;
+    //   print('DEBUG STATUS: $status');
+    //   if (status == IjkStatus.complete && videoInfo.progress > 0.9) {
+    //     nextVideo();
+    //   }
+    // });
   }
 
   selectVideo(video, {automaticPlay = true}) {
@@ -70,24 +70,24 @@ class VideoController {
 
   loadVideo(url, {automaticPlay = true}) {
     print('automaticPlay: $automaticPlay');
-    _playerController.pause().then((_) {
-      _playerController.setNetworkDataSource(url, autoPlay: true).then((_) {
-        _videoTitleController.sink.add(currentVideo.title);
-        if (automaticPlay == false) {
-          Timer.periodic(Duration(seconds: 1), (timer) async {
-            final videoInfo = await _playerController.getVideoInfo();
-            if (videoInfo.duration > 0) {
-              _playerController.pause();
-              timer.cancel();
-            }
-          });
-        }
-      });
-    });
+    // _playerController.pause().then((_) {
+    //   _playerController.setNetworkDataSource(url, autoPlay: true).then((_) {
+    //     _videoTitleController.sink.add(currentVideo.title);
+    //     if (automaticPlay == false) {
+    //       Timer.periodic(Duration(seconds: 1), (timer) async {
+    //         final videoInfo = await _playerController.getVideoInfo();
+    //         if (videoInfo.duration > 0) {
+    //           _playerController.pause();
+    //           timer.cancel();
+    //         }
+    //       });
+    //     }
+    //   });
+    // });
   }
 
   dispose() {
-    _playerController.dispose();
+    // _playerController.dispose();
     _videoTitleController.close();
   }
 
@@ -127,6 +127,12 @@ class VideoController {
                 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
             'viewed': false,
           },
+          {
+            'title': 'Video 6 da abelhinha',
+            'url':
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+            'viewed': false
+          }
         ]
       }
     ]
