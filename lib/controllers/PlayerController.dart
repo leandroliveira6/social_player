@@ -22,9 +22,13 @@ class PlayerController {
   static get playerStream => _playerStreamController.stream;
   static get titleStream => _titleStreamController.stream;
 
-  static void loadPlayer(index, onComplete) {
+  static void loadPlayer(index, onComplete) async {
+    print('PlayerController loadPlayer');
     Map track = PlaylistController.getTrack(index);
     _titleStreamController.sink.add(track['name']);
+    _controller?.removeListener(() async {
+      await _controller.dispose();
+    });
     _controller = VideoPlayerController.network(track['url']);
     _controller.addListener(() async {
       if (_controller.value.position == _controller.value.duration) {

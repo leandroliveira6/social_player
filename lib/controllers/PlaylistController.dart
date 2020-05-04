@@ -5,20 +5,14 @@ import 'package:social_player/controllers/PlayerController.dart';
 class PlaylistController {
   static String _id;
   static Map _playlist;
-  static List<Map> _tracks;
-  static StreamController<Map> _playlistStreamController;
-  static StreamController<List<Map>> _tracksStreamController;
+  static List<Map<String, dynamic>> _tracks;
 
-  static get playlistStream => _playlistStreamController.stream;
-  static get tracksStream => _tracksStreamController.stream;
   static get tracks => _tracks;
   static Map getTrack(index) => _tracks[index];
 
   PlaylistController(id) {
     print('PlaylistController constructor $_id $id');
     if (_id != id) {
-      _playlistStreamController = StreamController.broadcast();
-      _tracksStreamController = StreamController.broadcast();
       _playlist = null;
       _tracks = null;
       _id = id;
@@ -26,32 +20,24 @@ class PlaylistController {
     _init();
   }
 
-  static void dispose() {
-    _playlistStreamController.close();
-    _tracksStreamController.close();
-  }
-
   static void _init() {
-    mountPlaylist();
-    mountTracks();
+    getPlaylist();
+    getTracks();
   }
 
-  static void mountPlaylist() {
-    if (_playlist != null) {
-      _playlistStreamController.sink.add(_playlist);
-    } else {
-      _fetchPlaylist(_id).then((playlist) {
+  static Future getPlaylist() {
+    if (_playlist == null) {
+      return _fetchPlaylist(_id).then((playlist) {
         _playlist = playlist;
-        _playlistStreamController.sink.add(_playlist);
+        return _playlist;
       });
     }
+    return Future.value(_playlist);
   }
 
-  static void mountTracks() {
-    if (_tracks != null) {
-      _tracksStreamController.sink.add(_tracks);
-    } else {
-      _fetchTracks(_id).then((tracks) {
+  static Future getTracks() {
+    if (_tracks == null) {
+      return _fetchTracks(_id).then((tracks) {
         _tracks = tracks;
         for (int i = 0; i < _tracks.length; i++) {
           if (!_tracks[i].containsKey('viewed')) {
@@ -59,13 +45,15 @@ class PlaylistController {
             break;
           }
         }
-        _tracksStreamController.sink.add(_tracks);
+        return _tracks;
       });
     }
+    return Future.value(_tracks);
   }
 
   static void initTrack(index) {
     PlayerController.loadPlayer(index, () {
+      _markAsSeen(index);
       if (index + 1 != _tracks.length) {
         print('Avançando track para ${index + 1}');
         initTrack(index + 1);
@@ -76,12 +64,11 @@ class PlaylistController {
     });
   }
 
-  // void updateTrack(id, value) {
-  //   Map track = _tracks.firstWhere((element) => element.containsKey(id));
-  //   track[id].addAll(value);
-  // }
+  static void _markAsSeen(index) {
+    _tracks[index].putIfAbsent('viewed', () => true);
+  }
 
-  static Future _fetchPlaylist(id) async {
+  static Future<Map<String, dynamic>> _fetchPlaylist(id) async {
     return Future.delayed(Duration(seconds: 1), () {
       return {
         'id': 'kajfja93',
@@ -91,7 +78,7 @@ class PlaylistController {
     });
   }
 
-  static Future _fetchTracks(id) async {
+  static Future<List<Map<String, dynamic>>> _fetchTracks(id) async {
     return Future.delayed(Duration(seconds: 2), () {
       return [
         {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:social_player/controllers/PlayerController.dart';
-import 'package:social_player/controllers/PlaylistController.dart';
 
 class PlayerWidget extends StatefulWidget {
   PlayerWidget({Key key}) : super(key: key);
@@ -12,7 +11,6 @@ class PlayerWidget extends StatefulWidget {
 class _PlayerWidgetState extends State<PlayerWidget> {
   @override
   void dispose() {
-    PlaylistController.dispose();
     PlayerController.dispose();
     super.dispose();
   }

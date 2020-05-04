@@ -16,8 +16,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         child: Column(
           children: <Widget>[
             DrawerHeader(
-              child: StreamBuilder(
-                stream: PlaylistController.playlistStream,
+              child: FutureBuilder(
+                future: PlaylistController.getPlaylist(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
                     return UserAccountsDrawerHeader(
@@ -32,8 +32,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               ),
             ),
             Expanded(
-              child: StreamBuilder(
-                stream: PlaylistController.tracksStream,
+              child: FutureBuilder(
+                future: PlaylistController.getTracks(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
