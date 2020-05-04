@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:social_player/controllers/PlayerController.dart';
+import 'package:social_player/controllers/PlaylistController.dart';
 
 class PlayerWidget extends StatefulWidget {
   PlayerWidget({Key key}) : super(key: key);
@@ -9,26 +10,11 @@ class PlayerWidget extends StatefulWidget {
 }
 
 class _PlayerWidgetState extends State<PlayerWidget> {
-  VideoPlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = VideoPlayerController.network(
-        'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4');
-    _controller.initialize();
-    _controller.addListener(() {
-      if (_controller.value.position == _controller.value.duration) {
-        print('Terminou');
-        _controller.seekTo(Duration.zero);
-      }
-    });
-  }
-
   @override
   void dispose() {
+    PlaylistController.dispose();
+    PlayerController.dispose();
     super.dispose();
-    _controller.dispose();
   }
 
   @override
@@ -37,14 +23,26 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       children: [
         AspectRatio(
           aspectRatio: 16 / 8,
-          child: VideoPlayer(_controller),
+          child: StreamBuilder(
+            stream: PlayerController.playerStream,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return snapshot.data;
+              }
+              return Container(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+          ),
         ),
         Row(children: [
           FlatButton(
             child: Text('Play'),
             onPressed: () {
               setState(() {
-                _controller.play();
+                PlayerController.play();
               });
             },
           ),
@@ -52,7 +50,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             child: Text('Pause'),
             onPressed: () {
               setState(() {
-                _controller.pause();
+                PlayerController.pause();
               });
             },
           ),
@@ -60,6 +58,4 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       ],
     );
   }
-
-  void onViewPlayerCreated(controller) {}
 }
